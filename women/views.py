@@ -1,44 +1,59 @@
 from django.http import (
-    Http404,
     HttpRequest,
     HttpResponse,
     HttpResponseNotFound,
-    HttpResponseRedirect,
-    HttpResponsePermanentRedirect,
 )
 from django.shortcuts import redirect, render, reverse
 from django.template.loader import render_to_string
+from django.template.defaultfilters import slugify
+
+menu = [{'title': "О сайте", 'url_name': 'about'},
+        {'title': "Добавить статью", 'url_name': 'add_page'},
+        {'title': "Обратная связь", 'url_name': 'contact'},
+        {'title': "Войти", 'url_name': 'login'}]
+
+data_db = [
+    {'id': 1, 'title': 'Анджелина Джоли', 'content': '<b>Та</b> ещё соска\nсасная', 'is_published': True},
+    {'id': 2, 'title': 'Марго Робби', 'content': 'Биография Марго Робби', 'is_published': False},
+    {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулии Робертс', 'is_published': True},
+]
 
 
 # Create your views here.
 def index(request: HttpRequest):
     # t = render_to_string('women/index.html')
     # return HttpResponse(t)
-    return render(request, 'women/index.html')
+    data = {
+        'title': 'Главная страница naebal',
+        'menu': menu,
+        'posts': data_db,
+    }
+    return render(request, 'women/index.html', context=data)
 
 
-def about(request: HttpRequest):
-    return render(request, 'women/about.html')
+def about(request: HttpRequest) -> HttpResponse:
+    data = {'title': 'О сайте', 'menu': menu}
+    return render(request, 'women/about.html', context=data)
 
 
-def categories(request: HttpRequest, cat_id):
-    return HttpResponse(f"<h1>cats a lot cats!!!</h1>"
-                        f"<p>id: {cat_id}</p>")
+def show_post(request: HttpRequest, post_id: int) -> HttpResponse:
+    return HttpResponse(f"Отображение статьи с id = {post_id}")
 
 
-def categories_by_slug(request: HttpRequest, cat_slug):
-    if request.GET:
-        print(request.GET)
-    return HttpResponse(f"<h1>many a lot of slugs!!!</h1>"
-                        f"<p>slug: {cat_slug}</p>")
+def addpage(request: HttpRequest) -> HttpResponse:
+    return HttpResponse("Добавление статьи")
 
 
-def archive(request: HttpRequest, year):
-    if year > 2023:
-        uri = reverse('cats', args=('music', ))
-        return HttpResponsePermanentRedirect(uri)
-    return HttpResponse(f"<h1>Архив по годам</h1>"
-                        f"<p>year: {year}")
+
+
+def contact(request: HttpRequest) -> HttpResponse:
+    return HttpResponse("Обратная связь")
+
+
+
+
+def login(request: HttpRequest) -> HttpResponse:
+    return HttpResponse("Авторизация")
 
 
 def page_not_found(request: HttpRequest, exception):
