@@ -18,15 +18,20 @@ data_db = [
     {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулии Робертс', 'is_published': True},
 ]
 
+cats_db = [
+    {'id': 1, 'name': 'Актрисы'},
+    {'id': 2, 'name': 'Певицы'},
+    {'id': 3, 'name': 'Спортсменки'},
+]
+
 
 # Create your views here.
 def index(request: HttpRequest):
-    # t = render_to_string('women/index.html')
-    # return HttpResponse(t)
     data = {
         'title': 'Главная страница naebal',
         'menu': menu,
         'posts': data_db,
+        'cat_selected': 0,
     }
     return render(request, 'women/index.html', context=data)
 
@@ -34,6 +39,16 @@ def index(request: HttpRequest):
 def about(request: HttpRequest) -> HttpResponse:
     data = {'title': 'О сайте', 'menu': menu}
     return render(request, 'women/about.html', context=data)
+
+
+def show_category(request: HttpRequest, cat_id: int) -> HttpResponse:
+    data = {
+        'title': 'Mapping with rubric',
+        'menu': menu,
+        'posts': data_db,
+        'cat_selected': cat_id,
+    }
+    return render(request, 'women/index.html', context=data)
 
 
 def show_post(request: HttpRequest, post_id: int) -> HttpResponse:
@@ -44,12 +59,8 @@ def addpage(request: HttpRequest) -> HttpResponse:
     return HttpResponse("Добавление статьи")
 
 
-
-
 def contact(request: HttpRequest) -> HttpResponse:
     return HttpResponse("Обратная связь")
-
-
 
 
 def login(request: HttpRequest) -> HttpResponse:
